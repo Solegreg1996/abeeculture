@@ -1,4 +1,40 @@
+"use client";
+
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
 export default function Home() {
+  const [formStatus, setFormStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+
+  async function handleEarlyAccessSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+    setFormStatus("loading");
+
+    const form = event.currentTarget;
+const formData = new FormData(form);
+
+    const { error } = await supabase.from("early_access_leads").insert({
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      email_opt_in: formData.get("email_opt_in") === "on",
+    });
+
+    if (error) {
+      console.error(error);
+      setFormStatus("error");
+      return;
+    }
+
+    setFormStatus("success");
+    form.reset();
+  }
+
   return (
     <main className="min-h-screen bg-[#FFF8E7] text-[#1F1A12]">
       <section className="relative overflow-hidden px-6 py-8 md:px-12 lg:px-20">
@@ -19,21 +55,15 @@ export default function Home() {
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
           <div>
-          <p className="mb-6 inline-flex rounded-full border border-[#E8D49C] bg-white px-5 py-2 text-xs font-bold uppercase tracking-[0.25em] text-[#8A5A00] shadow-sm">
-  Alertes apicoles localisées
-</p>
+            <p className="mb-6 inline-flex rounded-full border border-[#E8D49C] bg-white px-5 py-2 text-xs font-bold uppercase tracking-[0.25em] text-[#8A5A00] shadow-sm">
+              Alertes apicoles localisées
+            </p>
 
             <h1 className="max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.04em] md:text-7xl">
-             <>
-  Anticipez les
-  <span className="block text-[#B47A00]">
-    floraisons
-  </span>
-  et la nectarification
-  <span className="block">
-    de vos ruchers.
-  </span>
-</>
+              Anticipez les
+              <span className="block text-[#B47A00]">floraisons</span>
+              et la nectarification
+              <span className="block">de vos ruchers.</span>
             </h1>
 
             <p className="mt-8 max-w-2xl text-xl leading-9 text-[#5F5443]">
@@ -58,7 +88,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-[#F3E2B3] bg-white p-5 shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
+          <div className="rounded-[2rem] bg-white p-5 shadow-2xl">
             <div className="rounded-[1.5rem] bg-[#1F1A12] p-6 text-white">
               <div className="mb-6 flex items-center justify-between">
                 <div>
@@ -183,36 +213,55 @@ export default function Home() {
             et recevoir les premières alertes apicoles localisées.
           </p>
 
-          <form className="mt-8 grid gap-4 rounded-3xl bg-[#FFF8E7] p-5 shadow-sm md:grid-cols-2">
+          <form
+            onSubmit={handleEarlyAccessSubmit}
+            className="mt-8 grid gap-4 rounded-3xl bg-[#FFF8E7] p-5 shadow-sm md:grid-cols-2"
+          >
             <input
+              name="first_name"
               className="rounded-2xl border border-[#E8D49C] px-5 py-4 outline-none"
               placeholder="Prénom"
             />
             <input
+              name="last_name"
               className="rounded-2xl border border-[#E8D49C] px-5 py-4 outline-none"
               placeholder="Nom"
             />
             <input
+              name="email"
+              required
               className="rounded-2xl border border-[#E8D49C] px-5 py-4 outline-none md:col-span-2"
               placeholder="Adresse email"
               type="email"
             />
             <input
+              name="phone"
               className="rounded-2xl border border-[#E8D49C] px-5 py-4 outline-none md:col-span-2"
               placeholder="Téléphone"
               type="tel"
             />
             <label className="flex gap-3 text-left text-sm text-[#5F5443] md:col-span-2">
-              <input type="checkbox" className="mt-1" />
+              <input name="email_opt_in" type="checkbox" className="mt-1" />
               J’accepte de recevoir des emails d’Abeeculture concernant les alertes,
               conseils apicoles et informations produit.
             </label>
             <button
-              type="button"
+              type="submit"
               className="rounded-full bg-[#1F1A12] px-7 py-4 text-sm font-semibold text-white md:col-span-2"
             >
-              Demander mon accès
+              {formStatus === "loading" ? "Envoi en cours..." : "Demander mon accès"}
             </button>
+            {formStatus === "success" && (
+              <p className="text-sm font-semibold text-green-700 md:col-span-2">
+                Merci, votre demande d’accès a bien été enregistrée.
+              </p>
+            )}
+
+            {formStatus === "error" && (
+              <p className="text-sm font-semibold text-red-700 md:col-span-2">
+                Une erreur est survenue. Vérifiez les champs ou réessayez.
+              </p>
+            )}
           </form>
         </div>
       </section>
