@@ -5,15 +5,15 @@ import { createClient } from "@/lib/supabaseBrowser";
 import { geocodeCity } from "@/lib/geocoding";
 
 type Apiary = {
-  id: string;
-  name: string;
-  city: string | null;
-  country: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  environment: string | null;
-  hive_count: number | null;
-  colony_strength: string | null;
+    id: string;
+    name: string;
+    city: string | null;
+    country: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    environment: string | null;
+    hive_count: number | null;
+    colony_strength: string | null;
 };
 
 export default function ApiariesPage() {
@@ -106,8 +106,6 @@ export default function ApiariesPage() {
             name: "",
             city: "",
             country: "France",
-            latitude: "",
-            longitude: "",
             hive_count: 1,
             environment: "",
             colony_strength: "medium",
