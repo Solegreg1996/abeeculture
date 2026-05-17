@@ -49,7 +49,7 @@ const formData = new FormData(form);
           <div className="hidden items-center gap-8 text-sm font-medium md:flex">
             <a href="#features">Fonctionnalités</a>
             <a href="#how">Comment ça marche</a>
-            <a href="#signup">Accès anticipé</a>
+            <a href="/signup">Accès anticipé</a>
           </div>
         </nav>
 
@@ -74,7 +74,7 @@ const formData = new FormData(form);
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a
-                href="#signup"
+                href="/signup"
                 className="rounded-full bg-[#1F1A12] px-7 py-4 text-center text-sm font-semibold text-white shadow-lg transition hover:bg-[#3A3122]"
               >
                 Rejoindre l’accès anticipé
